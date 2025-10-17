@@ -1,0 +1,6 @@
+{
+    "Alice": ["Bob", "Carol"],
+    "Bob": ["Dave", "Diane"],
+    "Carol": ["Eve", "Frank"],
+    "George": ["Helen"]
+}

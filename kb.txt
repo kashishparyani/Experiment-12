@@ -1,0 +1,5 @@
+Python is a high-level, general-purpose programming language.
+Machine learning is a field of study in artificial intelligence.
+A* search is a popular algorithm for pathfinding and graph traversal.
+Bayesian inference is a method of statistical inference in which Bayes' theorem is used to update the probability for a hypothesis.
+Natural Language Toolkit, or NLTK, is a suite of libraries for symbolic and statistical natural language processing.
