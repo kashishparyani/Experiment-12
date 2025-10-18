@@ -4,7 +4,6 @@ import json
 import heapq
 from typing import List, Dict, Tuple, Optional, Any
 
-# ===== Modules (Unchanged from previous version) =====
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -80,10 +79,7 @@ class AStarPlanner:
                     heapq.heappush(open_set, (f_cost, new_g_cost, neighbor, path + [neighbor]))
         return float("inf"), []
 
-
-# ===== Integrated Agent (ROBUSTNESS & FUNCTIONALITY UPGRADES) =====
 class SmartAgent:
-    """An integrated agent with improved input checking and functionality."""
     def __init__(self):
         kb_docs = self._load_text_file("kb.txt")
         family_data = self._load_json_file("family.json")
@@ -111,14 +107,11 @@ class SmartAgent:
         except (FileNotFoundError, json.JSONDecodeError): return None
 
     def handle_input(self, query: str) -> str:
-        """Robust dispatcher with improved input checks."""
         q = query.lower()
 
         patterns = {
-            # New "list" commands for discoverability
             r"list family|who is in the family tree": (self._handle_list_family, 'none'),
             r"list locations|show locations|what places do you know": (self._handle_list_locations, 'none'),
-            # Existing commands
             r"(?:shortest )?(?:path|route|way) from (\w+) to (\w+)": (self._handle_path, 'groups'),
             r"(?:grandchildren|grandkids) of (\w+)": (self._handle_grandchildren, 'groups'),
             r"(?:children|kids) of (\w+)": (self._handle_children, 'groups'),
@@ -144,24 +137,19 @@ class SmartAgent:
         else:
             return "I'm not sure about that. Try asking me for 'help' to see my capabilities."
     
-    # --- Handler methods with improved checks ---
-    
     def _handle_retrieval(self, query: str) -> str:
-        # Guard against vague queries
         clean_query = re.sub(r"tell me about|what is|explain", "", query, flags=re.IGNORECASE).strip()
         if len(clean_query) < 3:
             return "Please be more specific. What would you like to know about?"
         return "\n".join(self.retriever.retrieve(query))
 
     def _handle_children(self, parent: str) -> str:
-        # Check if person exists before querying
         if parent.lower() not in self.family.relations:
             return f"Sorry, the name '{parent.capitalize()}' is not in my family tree."
         children = self.family.get_children(parent)
         return f"The children of {parent.capitalize()} are: {', '.join(children)}." if children else f"{parent.capitalize()} has no children in my records."
 
     def _handle_grandchildren(self, grandparent: str) -> str:
-        # Check if person exists
         if grandparent.lower() not in self.family.relations:
             return f"Sorry, the name '{grandparent.capitalize()}' is not in my family tree."
         grandchildren = self.family.get_grandchildren(grandparent)
@@ -177,7 +165,6 @@ class SmartAgent:
 
     def _handle_path(self, start: str, goal: str) -> str:
         start_node, goal_node = start.upper(), goal.upper()
-        # Check if locations exist before planning
         if start_node not in self.planner.graph:
             return f"I don't know the location '{start_node}'. Try 'list locations' to see where I can navigate."
         if goal_node not in self.planner.graph:
@@ -186,8 +173,6 @@ class SmartAgent:
         cost, path = self.planner.plan(start_node, goal_node)
         return f"The best path from {start_node} to {goal_node} is: {' -> '.join(path)} (Total Cost: {cost})" if path else f"Sorry, I couldn't find a path from {start_node} to {goal_node}."
 
-    # --- New functionality handlers ---
-    
     def _handle_list_family(self) -> str:
         names = sorted([name.capitalize() for name in self.family.relations.keys()])
         return f"My family tree includes: {', '.join(names)}."
@@ -206,7 +191,6 @@ You can ask me things like:
 - **Sentiment**: "I had a wonderful day"
 """
 
-# ===== Command-Line Interface (with input validation) =====
 def main_cli():
     print("=" * 40)
     print("=== Smart Personal Assistant Agent ===")
@@ -215,7 +199,6 @@ def main_cli():
     while True:
         try:
             txt = input("You> ")
-            # Explicitly check for empty/whitespace input
             if not txt or not txt.strip():
                 continue
             if txt.lower() in ["exit", "quit"]:
